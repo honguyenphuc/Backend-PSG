@@ -5,39 +5,37 @@ class APIProduct{
     async show(req,res){
         const page = req.query.page;
         const pageNumber = parseInt(page);
-        const limitNumber = 5;
+        const limitNumber = 4; 
         const skip = (pageNumber - 1) * limitNumber;
         try{
             const products = await Product.find().skip(skip).limit(limitNumber);
             const totalProducts = await Product.countDocuments();
-            console.log(totalProducts)
+            const totalPage = Math.ceil(totalProducts/limitNumber)
+            console.log(totalPage)
             res.status(200).json({products, totalProducts});
         }catch(err){
             res.status(404).json({message: err.message});
         }
     }
    
-    async detail(req,res){
-        const id = req.params.id;
-        try {
-            const product = await Product.findById(id)
-            res.status(200).json(product);
-        } catch (err) {
-            res.status(404).json({message: err.message});
-        }
-    }
 
     async create(req,res){
-        const product =  req.body;
+        const {title, price, thumbnail} =  req.body;
+        const product = {
+            ten: title,
+            hinhanh: thumbnail,
+            gia: price,
+            category: "Men"
+        }
         try {
             const data =  await Product.create(product);
             await data.save();
-            res.status(200).json(data);
+            res.status(200).json({
+                message: 'Thêm sản phẩm thành công!'
+            });
         } catch (err) {
             res.status(404).json({message: err.message});
         }
-
-
     }
     //sửa thông tin sản phẩm
     async update(req,res){

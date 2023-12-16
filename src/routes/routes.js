@@ -7,18 +7,23 @@ const user = require("../controllers/api-user");
 const category = require("../controllers/api-category");
 const search = require("../controllers/api-search")
 const delivery = require("../controllers/api-delivery")
+const showProduct = require("../controllers/api-showProduct")
+const paymentController = require("../controllers/api-paypal")
 
-router.get("/",product.show);
+router.get("/",user.authenticateToken,user.checkadmin,product.show);
 router.get("/danhmuc",category.showcategory);
 router.get("/search",search.searchProduct);
+router.get('/success', paymentController.executePayment);
+router.get('/cancel', paymentController.cancelPayment);
 
 router.get("/:id",product.detail);
-router.get("/danhmuc/:category",category.detailcategory);
-
+router.get("/danhmuc/Men",showProduct.ShowMen);
+// router.get("/danhmuc/Women",showProduct.ShowWomen);
 
 router.post("/",product.create);
 router.post("/delivery",delivery.Delivery);
-router.put("/delivery/:id/status",delivery.updateSatus)
+router.put("/delivery/:id/status",delivery.updateSatus);
+router.post('/create-payment', paymentController.createPayment);
 router.patch("/:id",product.update);
 router.delete("/:id",product.delete);
 router.post("/danhmuc",category.createcategory);
